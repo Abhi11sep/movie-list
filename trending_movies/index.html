@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    h1 {
+        text-align: center;
+        color: blue;
+    }
+
+    #can {
+        width: 15%;
+        margin: auto;
+    }
+
+    #moviename {
+        border-radius: 15px;
+        padding: 10px 35px;
+    }
+
+    #main {
+        width: 80%;
+        margin: 25px auto;
+        text-align: center;
+        display: grid;
+        grid-template-rows: auto;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+    }
+
+    #main div {
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        border-radius: 15px;
+    }
+
+    #main div img {
+        border-radius: 15px;
+        width: 100%;
+    }
+</style>
+
+<body>
+    <h1>Movies List</h1>
+    <div id="can">
+        <input type="text" id="moviename" placeholder="enter movie name" oninput="main()">
+    </div>
+
+    <button onclick="sortNO()">Sort newest to older</button>
+    <button onclick="sortON()">Sort older to newest</button>
+    <input type="number" id="sorter" placeholder="movie after the year" oninput="sorter()">
+    <div id="main"></div>
+
+
+</body>
+<script>
+let x;
+let data;
+    let box = document.getElementById("main");
+
+    async function main() {
+
+        try {
+
+            let name = document.getElementById("moviename").value;
+            console.log('query : ', name);
+            let res = await fetch(`https://www.omdbapi.com/?s=${name}&apikey=d1954e8a`)
+            data = await res.json();
+            x=data.Search;
+            console.log('data', data);
+            console.log('x', x);
+           
+            display();
+        }
+        catch (err) {
+            console.log('error :', err);
+        }
+    }
+
+
+    function sortON() {
+       
+        x= x.sort(function (a, b) {
+            return a.Year - b.Year;
+        })
+        display(x);
+    }
+
+
+
+    function sortNO() {
+        x = x.sort(function (a, b) {
+            return b.Year - a.Year;
+        })
+        display(x);
+    }
+
+
+    function sorter(){
+        let inputyear=document.getElementById("sorter").value;
+        console.log(inputyear,data.Search);
+        let a=data.Search;
+            console.log(a);
+        let m=a.filter(function(el){
+        
+            return el.Year>inputyear;
+         
+        })
+       console.log(m);
+       disp(m);
+    }
+    function disp(m) {
+        box.innerHTML = null;
+        m.forEach(function (el) {
+            let div = document.createElement("div");
+            let img = document.createElement("img");
+            img.src = el.Poster;
+            let title = document.createElement("p");
+            title.innerText = el.Title;
+            let type = document.createElement("p");
+            type.innerText = el.Type;
+            let year = document.createElement("p");
+            year.innerText = el.Year;
+            let imdb = document.createElement("p");
+            imdb.innerText = el.imdbID;
+
+
+            div.append(img, title, type, year, imdb);
+            box.append(div);
+
+        })
+    }
+
+    function display() {
+        box.innerHTML = null;
+        x.forEach(function (el) {
+            let div = document.createElement("div");
+            let img = document.createElement("img");
+            img.src = el.Poster;
+            let title = document.createElement("p");
+            title.innerText = el.Title;
+            let type = document.createElement("p");
+            type.innerText = el.Type;
+            let year = document.createElement("p");
+            year.innerText = el.Year;
+            let imdb = document.createElement("p");
+            imdb.innerText = el.imdbID;
+
+
+            div.append(img, title, type, year, imdb);
+            box.append(div);
+
+        })
+    }
+
+
+
+</script>
+
+</script>
+
+</html>
